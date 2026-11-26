@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>QLDA KCN Văn Giang</title>
+<meta name="description" content="Theo dõi tiến độ, hồ sơ, GPMB và tờ trình Dự án KCN Văn Giang">
+<meta name="theme-color" content="#1f4e79">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="style.css?v=1.7.0">
+<script>try{document.documentElement.dataset.theme=localStorage.getItem('qlda-giao-dien')||'light'}catch(e){document.documentElement.dataset.theme='light'}</script>
+</head>
+<body>
+<header class="top">
+  <div class="brand">
+    <svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true"><rect width="32" height="32" rx="7" fill="var(--chinh)"/><path d="M7 22h18M9 22V12l5-3v13M14 22V9l9 4v9" stroke="#fff" stroke-width="2" fill="none" stroke-linejoin="round"/></svg>
+    <div><b>QLDA KCN Văn Giang</b><small id="ten-du-an">Giai đoạn 1</small></div>
+  </div>
+  <nav id="nav" aria-label="Chức năng">
+    <button data-act="den" data-view="tong-quan">Tổng quan</button>
+    <button data-act="den" data-view="tien-do">Tiến độ</button>
+    <button data-act="den" data-view="gpmb">GPMB</button>
+    <button data-act="den" data-view="hop-dong">Hợp đồng</button>
+    <button data-act="den" data-view="ban-ve">Bản vẽ</button>
+    <button data-act="den" data-view="van-ban">Văn bản</button>
+    <button data-act="den" data-view="giao-viec">Giao việc</button>
+    <button data-act="den" data-view="bao-cao">Báo cáo</button>
+    <button data-act="den" data-view="cai-dat">Cài đặt</button>
+  </nav>
+  <button id="giao-dien" class="giao-dien" data-act="giao-dien" title="Đổi giao diện sáng / tối">◐ Tối</button>
+  <button id="dong-bo" class="dong-bo" data-act="den" data-view="cai-dat"></button>
+</header>
+<main id="view"></main>
+<aside id="drawer" class="drawer" hidden></aside>
+<div id="modal" class="modal" hidden></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<datalist id="dl-vb"></datalist>
+<script src="du-lieu-goc.js?v=1.7.0"></script>
+<script src="app.js?v=1.7.0"></script>
+<script src="tien-do.js?v=1.7.0"></script>
+<script src="gd2.js?v=1.7.0"></script>
+<script src="drive.js?v=1.7.0"></script>
+<script src="hoso-moi.js?v=1.7.0"></script>
+</body>
+</html>
