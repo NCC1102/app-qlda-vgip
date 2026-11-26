@@ -1,5 +1,5 @@
 // Bộ nhớ đệm để app mở được khi mất mạng (chỉ hoạt động khi chạy qua http://localhost).
-const BAN = 'qlda-vgip-v18';
+const BAN = 'qlda-vgip-v19';
 const TEP = ['./', './index.html', './app.js', './tien-do.js', './gd2.js', './drive.js', './hoso-moi.js', './style.css', './du-lieu-goc.js', './icon.svg', './manifest.webmanifest'];
 self.addEventListener('install', e => { e.waitUntil(caches.open(BAN).then(c => c.addAll(TEP))); self.skipWaiting(); });
 self.addEventListener('activate', e => { e.waitUntil(caches.keys().then(ks => Promise.all(ks.filter(k => k !== BAN).map(k => caches.delete(k))))); self.clients.claim(); });

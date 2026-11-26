@@ -31,6 +31,22 @@ Tham số: `$ARGUMENTS`
 - **Word:** dùng `python-docx` (đoạn và bảng). **Excel:** dùng `openpyxl`, `pandas`.
 - Số liệu lấy **nguyên văn trong văn bản**. QĐ hoặc văn bản cơ quan nhà nước là gốc; báo cáo nội bộ lệch với QĐ thì theo QĐ và ghi chú.
 - **Không ghi** họ tên, số điện thoại, CCCD, số tài khoản ngân hàng của cá nhân hoặc hộ dân. Chỉ ghi số tổng.
+- File `.doc` (Word 97) không đọc được bằng python-docx: lấy chữ từ luồng UTF-16 của file, hoặc chuyển sang `.docx` bằng Word/LibreOffice nếu máy có.
+
+### Báo cáo GPMB tuần (cập nhật thứ 5 hằng tuần)
+Thư mục `02. Hồ sơ thực hiện dự án\06. Báo cáo\06. Báo cáo GPMB\Báo cáo tuần NN ngày DD.MM\`, gồm:
+- báo cáo của BQL các KCN gửi UBND tỉnh (`.doc`);
+- bảng biểu của UBND xã: `Bangbieu KCN Van Giang DD.MM.xlsx` cho toàn dự án, và file khu 42 ha ưu tiên.
+
+Lấy **dòng tuần mới nhất** của bảng toàn dự án. Các cột theo nhóm: Tổng diện tích thu hồi (đất nông nghiệp ha, số hộ, phi NN, công ích ha, đất ở) / Đã điều tra, kiểm đếm / Đã lập PA và niêm yết / Đã phê duyệt PA / Đã thực hiện chi trả (diện tích ha, số hộ…) / Đã bàn giao. Ghi vào gói:
+```json
+"gpmbTongHop": {"ngay": "YYYY-MM-DD (ngày báo cáo)", "tongHa": 203.55, "thuHoiHa": 203.55, "congKhaiHa": 0, "chiTraHa": 0, "soHoChiTra": 0, "banGiaoHa": 0, "pheDuyetHaBaoCao": 0, "nguon": "BC GPMB tuần NN (DD/MM/YYYY) – bảng biểu UBND xã Nghĩa Trụ"},
+"moMaTongHop": {"ngay": "YYYY-MM-DD", "phatHien": 0, "kiemKe": 0, "congKhai": 0, "diDoi": 0}
+```
+- Diện tích lấy theo ha = đất nông nghiệp + đất công ích (+ đất ở nếu có), làm tròn 2 chữ số.
+- **Không ghi `pheDuyetHa`.** App tự cộng từ các QĐ. Số phê duyệt của báo cáo ghi vào `pheDuyetHaBaoCao`; nếu lớn hơn tổng QĐ trong app thì nêu trong `baoCao` là còn QĐ chưa thu thập.
+- Đưa file báo cáo `.doc` vào `vanBan`: loại Báo cáo, chiều Đến, cơ quan BQL các KCN tỉnh Hưng Yên, ngày báo cáo. File `.xlsx` không cần vào sổ.
+- Trong `baoCao`, so chi trả lũy kế với kế hoạch trong app (`gpmb.keHoachChiTra`) và nêu mốc gần nhất bị thiếu bao nhiêu ha.
 
 ## 3. Lập gói dữ liệu
 Ghi file `00. APP QLDA\goi-du-lieu\YYYY.MM.DD HHMM. Goi cap nhat.json` (UTF-8, `ensure_ascii=False`, `indent=1`):

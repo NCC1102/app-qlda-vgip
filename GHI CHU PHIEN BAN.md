@@ -1,3 +1,14 @@
+# ver10 – app 1.7.1 (26/11/2026) – Báo cáo GPMB hằng tuần
+- Thư mục `02. Hồ sơ thực hiện dự án\06. Báo cáo\06. Báo cáo GPMB` là nơi cập nhật báo cáo GPMB vào **thứ 5 hằng tuần**:
+  - Hồ sơ mới: file báo cáo gợi ý "Vào sổ báo cáo GPMB tuần"; file bảng biểu (.xlsx) chỉ ghi nhận.
+  - Tổng quan nhắc từ thứ 5 đến thứ 7 nếu tuần đó chưa có file mới trong thư mục.
+  - Số liệu GPMB quá 8 ngày chưa cập nhật thì báo ở Kiểm tra số liệu (trước là 14 ngày).
+- Gói dữ liệu nhận thêm `gpmbTongHop` (thu hồi, công khai, chi trả, số hộ chi trả, bàn giao, số phê duyệt theo báo cáo) và `moMaTongHop`:
+  - Ngày mới hơn thì thay số tổng hợp và thêm vào lịch sử (biểu đồ chi trả); ngày cũ hơn thì bỏ qua.
+  - Màn hình xem trước gói hiện phần "Cập nhật số liệu tổng hợp".
+- Kiểm tra số liệu báo khi báo cáo tuần ghi diện tích đã phê duyệt lớn hơn tổng các QĐ trong app (còn QĐ chưa thu thập). Tab GPMB hiện số hộ đã chi trả.
+- Lệnh `/cap-nhat-qlda` có thêm phần đọc báo cáo GPMB tuần.
+
 # ver9 – app 1.7.0 (26/11/2026) – Dùng thật
 - **Web và repo chỉ còn khung app:** `du-lieu-goc.js` chỉ giữ nhóm việc và quy trình mẫu Hưng Yên. Không còn QĐ, hợp đồng, văn bản, tiến độ, danh bạ hay số liệu dự án. Dữ liệu dự án chỉ nằm trong `00. APP QLDA\du-lieu.json` trên Google Drive của người dùng.
 - Khi chưa kết nối, Tổng quan nhắc "Chưa mở dữ liệu dự án" kèm nút kết nối.

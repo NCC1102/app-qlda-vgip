@@ -304,7 +304,8 @@ function kiemTraSoLieu() {
   if (th.tongHa && th.thuHoiHa > th.tongHa) them('GPMB', 'loi', `Diện tích thông báo thu hồi (${fmtHa(th.thuHoiHa)} ha) lớn hơn tổng diện tích (${fmtHa(th.tongHa)} ha).`);
   for (let i = 1; i < chuoi.length; i++) if ((th[chuoi[i][0]] || 0) > (th[chuoi[i - 1][0]] || 0) + 1e-6) them('GPMB', 'loi', `Số liệu ${chuoi[i][1]} (${fmtHa(th[chuoi[i][0]])} ha) lớn hơn ${chuoi[i - 1][1]} (${fmtHa(th[chuoi[i - 1][0]])} ha).`);
   if (th.ngay && !D.gpmb.lichSu.some(x => x.ngay === th.ngay)) them('GPMB', 'canh', `Số liệu GPMB ngày ${fmtNgay(th.ngay)} chưa bấm "Ghi nhận" – biểu đồ và báo cáo dùng số cũ.`, { view: 'gpmb' });
-  if (th.ngay && khoang(th.ngay, homNay()) > 14) them('GPMB', 'canh', `Số liệu GPMB đã ${khoang(th.ngay, homNay())} ngày chưa cập nhật (ngày ${fmtNgay(th.ngay)}).`, { view: 'gpmb' });
+  if (th.pheDuyetHaBaoCao && Math.abs(th.pheDuyetHaBaoCao - (th.pheDuyetHa || 0)) > 0.05) them('GPMB', 'canh', `Báo cáo GPMB ngày ${fmtNgay(th.ngay)} ghi đã phê duyệt ${fmtHa(th.pheDuyetHaBaoCao)} ha, các QĐ đang có trong app cộng ${fmtHa(th.pheDuyetHa)} ha – còn QĐ phê duyệt chưa thu thập (QĐ là số liệu gốc).`, { view: 'gpmb' });
+  if (th.ngay && khoang(th.ngay, homNay()) > 8) them('GPMB', 'canh', `Số liệu GPMB đã ${khoang(th.ngay, homNay())} ngày chưa cập nhật (ngày ${fmtNgay(th.ngay)}).`, { view: 'gpmb' });
   for (const x of tatCaQD()) {
     for (const id of [x.qdId, x.cvDeNghi?.vbId, x.cvdId, ...x.ttrIds].filter(Boolean)) if (!idVb.has(id)) them('Văn bản', 'loi', `${tenQD(x)}: gắn văn bản không còn trong sổ.`, { act: 'mo-dot', id: x.id });
     const q = vb(x.qdId); if (q && q.ngay && x.qdNgay && q.ngay !== x.qdNgay) them('GPMB', 'loi', `${tenQD(x)}: ngày QĐ ${fmtNgay(x.qdNgay)} khác ngày trong sổ văn bản ${fmtNgay(q.ngay)}.`, { act: 'mo-dot', id: x.id });

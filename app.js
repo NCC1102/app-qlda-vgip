@@ -2,7 +2,7 @@
 /* App QLDA KCN Văn Giang – Giai đoạn 1
    Dữ liệu: IndexedDB (đệm) + "00. APP QLDA\du-lieu.json" trong thư mục dự án (OneDrive). */
 
-const PHIEN_BAN_APP = '1.7.0';
+const PHIEN_BAN_APP = '1.7.1';
 
 /* ============================== tiện ích ============================== */
 const $ = (s, el = document) => el.querySelector(s);
@@ -703,6 +703,7 @@ function veTongQuan() {
   const ktLoi = kiemTraSoLieu().filter(x => x.mucDo === 'loi');
   if (ktLoi.length) canh.push(`<b>Kiểm tra số liệu:</b> ${ktLoi.length} lỗi có thể làm báo cáo sai lệch (VD: ${esc(ktLoi[0].nd)}). <a href="#" data-act="den" data-view="bao-cao">Xem và sửa</a>.`);
   if (tk.canXN.length) canh.push(`${tk.canXN.length} việc đã qua ngày kết thúc theo kế hoạch nhưng chưa được cập nhật kết quả. <a href="#" data-act="loc-xac-nhan">Xem và xác nhận</a>.`);
+  if (CHI_MUC?.files && typeof THU_MUC_BC_GPMB !== 'undefined') { const t0 = new Date(), thu = t0.getDay(), dauTuan = new Date(t0 - ((thu + 6) % 7) * 864e5).toISOString().slice(0, 10); const coBC = CHI_MUC.files.some(f => nfc(f.p).startsWith(nfc(THU_MUC_BC_GPMB) + '\\') && (f.sua || '') >= dauTuan); if (!coBC && (thu === 4 || thu === 5 || thu === 6)) canh.push(`<b>Báo cáo GPMB tuần:</b> chưa có file mới trong <code>06. Báo cáo\\06. Báo cáo GPMB</code> tuần này (cập nhật thứ 5).`); }
   if (typeof hoSoMoi === 'function') { const nHs = hoSoMoi().length, nGoi = UI.goiCho?.length || 0; if (nHs || nGoi) canh.push(`<b>Hồ sơ mới:</b> ${nHs ? `${nHs} file mới trên thư mục dự án chờ xử lý` : ''}${nHs && nGoi ? '; ' : ''}${nGoi ? `${nGoi} gói dữ liệu Claude chờ nạp` : ''}. <a href="#" data-act="den" data-view="van-ban" data-tab="moi">Xem và xử lý</a>.`); }
   if (tk.vbThieuFile.length) canh.push(`${tk.vbThieuFile.length} văn bản căn cứ quan trọng chưa có file trong thư mục dự án (${tk.vbThieuFile.map(v => esc(v.so)).join(', ')}).`);
   return `
@@ -840,8 +841,8 @@ function veGpmb() {
       <table><tbody>
         <tr><td>Thông báo thu hồi, kiểm kê</td><td class="so">${o('thuHoiHa', th.thuHoiHa)} / ${o('tongHa', th.tongHa)} ha</td></tr>
         <tr><td>Công khai phương án</td><td class="so">${o('congKhaiHa', th.congKhaiHa)} ha</td></tr>
-        <tr><td>Phê duyệt phương án<br><span class="muted nho">tự tính từ ${g.dot.length} QĐ phê duyệt bên dưới</span></td><td class="so"><b>${fmtHa(th.pheDuyetHa)}</b> ha · <b>${fmtSo(th.pheDuyetPA)}</b> PA</td></tr>
-        <tr><td><b>Đã chi trả</b></td><td class="so">${o('chiTraHa', th.chiTraHa)} ha (${fmtSo(th.chiTraHa / th.tongHa * 100, 1)}%)</td></tr>
+        <tr><td>Phê duyệt phương án<br><span class="muted nho">tự tính từ ${g.dot.length} QĐ phê duyệt bên dưới</span></td><td class="so"><b>${fmtHa(th.pheDuyetHa)}</b> ha · <b>${fmtSo(th.pheDuyetPA)}</b> PA${th.pheDuyetHaBaoCao && Math.abs(th.pheDuyetHaBaoCao - (th.pheDuyetHa || 0)) > 0.05 ? `<br><span class="nho" style="color:var(--canh)">báo cáo tuần ghi ${fmtHa(th.pheDuyetHaBaoCao)} ha – còn QĐ chưa thu thập</span>` : ''}</td></tr>
+        <tr><td><b>Đã chi trả</b></td><td class="so">${o('chiTraHa', th.chiTraHa)} ha (${fmtSo(th.chiTraHa / th.tongHa * 100, 1)}%)${th.soHoChiTra ? ` · ${fmtSo(th.soHoChiTra)} hộ` : ''}</td></tr>
         <tr><td>Đã bàn giao thực địa</td><td class="so">${o('banGiaoHa', th.banGiaoHa)} ha</td></tr>
       </tbody></table>
       <p class="muted nho">Nguồn: ${esc(th.nguon || '')}. Sửa số liệu rồi bấm "Ghi nhận" để lưu vào lịch sử và biểu đồ.</p>

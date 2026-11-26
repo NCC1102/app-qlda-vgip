@@ -6,6 +6,7 @@
    3. Gói dữ liệu do Claude lập (00. APP QLDA\goi-du-lieu\*.json): app tự phát hiện, xem trước thay đổi và các chỗ lệch, rồi nạp.
    ===================================================================== */
 const THU_MUC_GOI = 'goi-du-lieu';
+const THU_MUC_BC_GPMB = '02. Hồ sơ thực hiện dự án\\06. Báo cáo\\06. Báo cáo GPMB'; // báo cáo GPMB cập nhật thứ 5 hằng tuần
 const DUOI_MEDIA = /\.(jpe?g|png|gif|heic|webp|mp4|mov|avi|mp3|wav|psd|psb|ai|svg|ttf|otf|woff2?|zip|rar|7z|las|tif|tiff|kmz|kml|bak|dst|log|lnk|url|ini|cfg)$/i;
 UI.hsChon ||= null;
 
@@ -84,6 +85,10 @@ function hoSoMoi() {
 function goiYHoSo(f) {
   const p = nfc(f.p), ten = p.split('\\').pop(), tm = p.split('\\').slice(0, -1).join('\\'), tt = phanTichTen(ten, tm);
   if (p.startsWith(nfc(THU_MUC_TIEN_DO) + '\\') && /\.xlsx?$/i.test(ten)) return { kieu: 'tien-do', nhan: 'Nhập file tiến độ', chiTiet: 'So sánh với tiến độ đang dùng, chọn thay đổi để áp dụng (lưu lịch sử).' };
+  if (p.startsWith(nfc(THU_MUC_BC_GPMB) + '\\')) {
+    if (/\.(xlsx?|csv)$/i.test(ten)) return { kieu: 'ghi-nhan', nhan: 'Bảng biểu kèm báo cáo GPMB tuần', chiTiet: 'Số liệu (thu hồi, công khai, phê duyệt, chi trả, bàn giao) do Claude đọc và lập gói: /cap-nhat-qlda.' };
+    return { kieu: 'vao-so', lien: [], taoMoi: null, nhan: 'Vào sổ báo cáo GPMB tuần', chiTiet: `${tt.loai === 'Khác' ? 'Báo cáo' : tt.loai}${tt.ngay ? ' · ' + fmtNgay(tt.ngay) : ''} · số liệu cập nhật qua gói Claude (/cap-nhat-qlda)` };
+  }
   const bvBo = D.banVe.find(b => b.duongDan && p.startsWith(nfc(b.duongDan) + '\\'));
   if (bvBo) return { kieu: 'ghi-nhan', nhan: 'Ghi nhận vào bộ bản vẽ', chiTiet: `Thuộc bộ "${bvBo.ten}" (số file tự cập nhật, không cần vào sổ).` };
   if (DUOI_MEDIA.test(ten)) return { kieu: 'ghi-nhan', nhan: 'Ghi nhận (ảnh, clip, file nén, CAD…)', chiTiet: 'Không đưa vào sổ văn bản.' };
@@ -189,7 +194,29 @@ const NHOM_GOI = {
 const MANG_NOI = new Set(['thanhToan', 'dieuChinh', 'vbIds', 'lienKet', 'ttrIds', 'checklist', 'vanBan', 'nhatKy']);
 // Phân tích (khi apDung=false) hoặc áp dụng một gói. chonLech: tập "nhóm|id|trường" được phép ghi đè.
 function xuLyGoi(d, g, apDung, chonLech = new Set()) {
-  const kq = { moi: [], dien: 0, them: 0, lech: [] };
+  const kq = { moi: [], dien: 0, them: 0, lech: [], capNhat: [] };
+  // Số liệu tổng hợp GPMB (báo cáo tuần): là ảnh chụp theo ngày – ngày mới hơn thì thay, cũ hơn thì bỏ qua; lưu vào lịch sử để vẽ biểu đồ.
+  const th = g.gpmbTongHop;
+  if (th?.ngay) {
+    const cu = d.gpmb.tongHop || {};
+    if (!cu.ngay || th.ngay > cu.ngay) {
+      const truong = ['thuHoiHa', 'tongHa', 'congKhaiHa', 'chiTraHa', 'banGiaoHa', 'soHoChiTra', 'pheDuyetHaBaoCao', 'nguon'];
+      kq.capNhat.push(`Số liệu GPMB ngày ${fmtNgay(th.ngay)} (đang có ${cu.ngay ? fmtNgay(cu.ngay) : '—'}): ` + truong.filter(f => th[f] != null && f !== 'nguon').map(f => `${f} ${cu[f] ?? '—'} → ${th[f]}`).join('; '));
+      if (apDung) {
+        for (const f of truong) if (th[f] != null) cu[f] = th[f];
+        cu.ngay = th.ngay; d.gpmb.tongHop = cu;
+        d.gpmb.lichSu = (d.gpmb.lichSu || []).filter(x => x.ngay !== th.ngay);
+        d.gpmb.lichSu.push({ ngay: th.ngay, chiTraHa: cu.chiTraHa, banGiaoHa: cu.banGiaoHa, pheDuyetHa: cu.pheDuyetHa, ghiChu: cu.nguon || '' });
+        d.gpmb.lichSu.sort((a, b) => a.ngay.localeCompare(b.ngay));
+      }
+    }
+  }
+  const mm = g.moMaTongHop;
+  if (mm?.ngay && (!d.gpmb.moMa.ngay || mm.ngay > d.gpmb.moMa.ngay)) {
+    const truong = ['phatHien', 'kiemKe', 'congKhai', 'diDoi', 'duKien', 'hanDiDoi'];
+    kq.capNhat.push(`Mồ mả ngày ${fmtNgay(mm.ngay)}: ` + truong.filter(f => mm[f] != null).map(f => `${f} ${d.gpmb.moMa[f] ?? '—'} → ${mm[f]}`).join('; '));
+    if (apDung) { for (const f of truong) if (mm[f] != null) d.gpmb.moMa[f] = mm[f]; d.gpmb.moMa.ngay = mm.ngay; }
+  }
   const rong = v => v == null || v === '' || (Array.isArray(v) && !v.length);
   for (const [k, [nhan, lay, tenCua]] of Object.entries(NHOM_GOI)) {
     const ds = lay(d);
@@ -240,12 +267,13 @@ function xuLyGoi(d, g, apDung, chonLech = new Set()) {
 }
 const hienGT = v => (v == null ? '—' : typeof v === 'number' ? fmtSo(v) : typeof v === 'object' ? JSON.stringify(v).slice(0, 80) : /^\d{4}-\d\d-\d\d$/.test(v) ? fmtNgay(v) : String(v).slice(0, 80));
 function xemGoi(i) {
-  const g = UI.goiCho[i] || UI.goiTay; if (!g) return;
+  const g = (UI.goiCho || [])[i] || UI.goiTay; if (!g) return;
   UI.goiDangXem = g;
   const kq = xuLyGoi(structuredClone(D), g.data, false);
   moModal(`Gói dữ liệu: ${g.data.ghiChu || g.ten}`, `
     <p class="nho">${esc(g.ten)}${g.data.taoLuc ? ' · lập ' + esc(new Date(g.data.taoLuc).toLocaleString('vi-VN')) : ''}</p>
     ${(g.data.nguon || []).length ? `<details><summary class="nho">Nguồn Claude đã đọc (${g.data.nguon.length} file)</summary><ul class="nho">${g.data.nguon.map(n => `<li>${esc(n.duongDan || n)}${n.noiDung ? ' – ' + esc(n.noiDung) : ''}</li>`).join('')}</ul></details>` : ''}
+    ${kq.capNhat.length ? `<div class="canh-hop nho"><b>Cập nhật số liệu tổng hợp</b><ul style="margin:4px 0 0 18px;padding:0">${kq.capNhat.map(s => `<li>${esc(s)}</li>`).join('')}</ul></div>` : ''}
     <p><b>${kq.moi.length}</b> bản ghi mới · <b>${kq.dien}</b> ô đang trống sẽ được điền · <b>${kq.them}</b> dòng thanh toán/điều chỉnh/liên kết mới · <b>${kq.lech.length}</b> chỗ lệch với số đang có</p>
     ${kq.moi.length ? `<details open><summary class="nho">Bản ghi mới</summary><ul class="nho">${kq.moi.map(s => `<li>${esc(s)}</li>`).join('')}</ul></details>` : ''}
     ${kq.lech.length ? `<h4 style="margin:10px 0 4px">Chỗ lệch – mặc định giữ số đang có; tích để thay bằng số trong gói</h4><div class="bang-wrap" style="max-height:260px"><table><thead><tr><th></th><th>Bản ghi</th><th>Trường</th><th>Đang có</th><th>Trong gói</th></tr></thead><tbody>
