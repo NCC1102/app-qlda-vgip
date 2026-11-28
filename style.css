@@ -179,3 +179,14 @@ svg text{fill:var(--phu);font-size:11px}
 .the-vb.nhieu-dong .fill{white-space:normal;overflow:visible;min-width:220px}
 /* đường cơ sở trên Timeline */
 .g-t .bar-goc{position:absolute;top:25px;height:4px;border-radius:2px;background:var(--chua);opacity:.75}
+/* 1.8.0 – Toàn bộ dự án, đường găng */
+.g-gang .bar:not(.tong){box-shadow:0 0 0 2px var(--cham)}
+.g-gang .g-l .ten{color:var(--cham);font-weight:600}
+.vd-gd{margin:10px 0}
+.vd-gd>summary{cursor:pointer;padding:8px 0;font-size:15px}
+.vd-nhom{margin:8px 0}
+.vd-nhom table th,.vd-nhom table td{padding:4px 6px;vertical-align:top;text-align:left}
+.vd-nhom select.o.nho{font-size:12px;padding:2px 4px;max-width:220px}
+/* 1.9.0 – Kiểm tra luật */
+.nhom-nut.ktl-tabs{flex-wrap:wrap}
+.ktl-tabs button{white-space:nowrap}

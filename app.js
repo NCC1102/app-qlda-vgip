@@ -2,7 +2,7 @@
 /* App QLDA KCN Văn Giang – Giai đoạn 1
    Dữ liệu: IndexedDB (đệm) + "00. APP QLDA\du-lieu.json" trong thư mục dự án (OneDrive). */
 
-const PHIEN_BAN_APP = '1.7.1';
+const PHIEN_BAN_APP = '1.9.0';
 
 /* ============================== tiện ích ============================== */
 const $ = (s, el = document) => el.querySelector(s);
@@ -673,7 +673,7 @@ function render() {
   const winY = window.scrollY;
   $$('#nav button').forEach(b => b.classList.toggle('on', b.dataset.view === UI.view));
   $('#ten-du-an').textContent = D.duAn.ten || '';
-  const VE = { 'tong-quan': veTongQuan, 'tien-do': veTienDo, gpmb: veGpmb, 'hop-dong': veHopDong, 'ban-ve': veBanVe, 'van-ban': veVanBan, 'giao-viec': veGiaoViec, 'bao-cao': veBaoCao, 'cai-dat': veCaiDat };
+  const VE = { 'tong-quan': veTongQuan, 'tien-do': veTienDo, gpmb: veGpmb, 'hop-dong': veHopDong, 'ban-ve': veBanVe, 'van-ban': veVanBan, 'giao-viec': veGiaoViec, 'bao-cao': veBaoCao, 'cai-dat': veCaiDat, ...(window.VE_THEM || {}) };
   $('#view').innerHTML = (VE[UI.view] || veTongQuan)();
   veDrawer(); veDongBo(); capNhatDatalist();
   $$('[data-cuon]').forEach(e => { const c = cuon[e.dataset.cuon]; if (c) { e.scrollLeft = c[0]; e.scrollTop = c[1]; } else if (e.dataset.cuonDen) e.scrollLeft = +e.dataset.cuonDen; });

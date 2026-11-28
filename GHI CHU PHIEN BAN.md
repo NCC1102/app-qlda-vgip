@@ -1,3 +1,26 @@
+# ver12 – app 1.9.0 (28/11/2026) – Kiểm tra luật
+- **Tab "Kiểm tra luật":** đối chiếu căn cứ pháp lý app đang trích với cơ sở văn bản pháp luật của Hệ thống VBPL dự án BĐS (17 thẻ chuyên đề, khoảng 460 mục văn bản, 160 mốc):
+  - Cơ sở đọc từ file `00. APP QLDA\vbpl-bds.json` trong thư mục dự án (không nằm trong repo). Bản đã đọc được giữ trong trình duyệt.
+  - Tự gom căn cứ ở thư viện bước chuẩn, quy trình mẫu (GPMB, thuê đất, miễn giảm) và bảng kiểm soát ưu đãi; tách số hiệu (kể cả dạng liệt kê "NĐ 71, 88/2024" và tên luật không kèm số như "Luật Đất đai Điều 94"); bỏ qua ngày tháng, "Kỳ họp 10/2026".
+  - Xếp mức: hết hiệu lực/bãi bỏ; sắp thay thế/cần xử lý; có thời hạn sắp hết (180 ngày); đang theo dõi thay đổi (căn cứ quy trình chưa xử lý); chưa có hiệu lực; trạng thái dự kiến; chưa có trong cơ sở; còn hiệu lực. Mỗi văn bản hiện số chỗ đang trích, văn bản thay thế, ghi chú rà soát.
+  - Mục con: Căn cứ quy trình GPMB – giao đất (việc cần làm khi văn bản đổi, đánh dấu đã xử lý), Điểm cần xác minh, Mốc sắp tới (120 ngày), Tra cứu (không dấu, hiểu "nghị định/thông tư/quyết định", lọc trạng thái, loại, thẻ).
+  - Bảng thủ tục chuẩn (tab Toàn bộ dự án) và khung việc hiện chip ⚖ cạnh căn cứ có vấn đề; bấm để tra cứu.
+  - Tổng quan nhắc khi có căn cứ hết hiệu lực hoặc sắp thay; Kiểm tra số liệu thêm nhóm "Pháp lý".
+- Tab mới đăng ký qua `window.VE_THEM` (không phải sửa bảng `VE` trong app.js).
+
+# ver11 – app 1.8.0 (28/11/2026) – Toàn bộ dự án, dời dây chuyền, đường găng
+- **Tab "Toàn bộ dự án":** theo dõi mọi bước của dự án, không chỉ GPMB:
+  - Thủ tục theo thư viện công việc chuẩn, chia 6 giai đoạn (pháp lý đầu tư, quy hoạch, đất đai, xây dựng, thi công, nội bộ) và các nhóm thủ tục. Mỗi bước có chủ trì/phối hợp, cơ quan, số ngày chuẩn, căn cứ pháp lý.
+  - Thư viện đọc từ file `00. APP QLDA	hu-vien-cong-viec.json` trong thư mục dự án (không nằm trong repo). Bản đã đọc được giữ trong trình duyệt để xem khi chưa kết nối.
+  - Trạng thái bước: theo việc tiến độ đã gắn (mã bước ghi vào `viec.idcv`); chưa gắn thì tự chọn Chưa làm / Đang làm / Đã xong / Không áp dụng. Nút "Đã xong cả nhóm", "Không áp dụng", "Đặt lại".
+  - "Gắn việc…" gợi ý việc có sẵn theo tên. "Đưa N bước vào tiến độ…" tạo việc nối tiếp nhau (xong mới làm) từ ngày chọn, ghi chủ trì, cơ quan, căn cứ.
+  - Mỗi nhóm thủ tục gắn một thư mục hồ sơ (gợi ý sẵn trong file thư viện, sửa được). App đếm file trong thư mục và nhắc khi đã có hồ sơ mà các bước còn "Chưa làm".
+  - Phần "Triển khai thực hiện theo nhóm việc" tóm tắt các nhóm A–H của tab Tiến độ (% thực hiện so với kế hoạch theo thời lượng); bấm để mở Tiến độ đã lọc.
+  - Tổng quan có thêm khối % theo giai đoạn.
+- **Dời dây chuyền:** khi sửa ngày bắt đầu, ngày kết thúc hoặc số ngày của một việc, nếu các việc nối sau bị vướng thì khung việc hiện danh sách sẽ dời (ngày cũ → mới), mốc bị trễ thêm và ngày hoàn thành toàn bộ tiến độ thay đổi. Bấm "Áp dụng" mới ghi; mỗi việc được ghi nhật ký. Việc đã xong không bị dời mà được báo để kiểm tra.
+- **Đường găng:** nút "Đường găng" trên Timeline tô viền đỏ các việc có dự trữ 0 ngày (tính lùi từ ngày kết thúc muộn nhất theo liên kết phụ thuộc). Khung việc hiện số ngày dự trữ và các việc nối sau. Kiểm tra số liệu báo lỗi khi việc trên đường găng đang chậm.
+- Ý tưởng và thư viện bước chuẩn lấy từ App Quản trị đầu tư (cùng tác giả).
+
 # ver10 – app 1.7.1 (26/11/2026) – Báo cáo GPMB hằng tuần
 - Thư mục `02. Hồ sơ thực hiện dự án\06. Báo cáo\06. Báo cáo GPMB` là nơi cập nhật báo cáo GPMB vào **thứ 5 hằng tuần**:
   - Hồ sơ mới: file báo cáo gợi ý "Vào sổ báo cáo GPMB tuần"; file bảng biểu (.xlsx) chỉ ghi nhận.

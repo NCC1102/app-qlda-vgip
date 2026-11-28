@@ -11,20 +11,22 @@ App web (vanilla JS, không build) quản lý dự án KCN Văn Giang – GĐ1: 
 ## Tệp
 | Tệp | Nội dung |
 |---|---|
-| `index.html` | Khung trang, thanh chức năng; nạp script theo thứ tự `du-lieu-goc.js → app.js → tien-do.js → gd2.js → drive.js → hoso-moi.js` |
+| `index.html` | Khung trang, thanh chức năng; nạp script theo thứ tự `du-lieu-goc.js → app.js → tien-do.js → gd2.js → drive.js → hoso-moi.js → vong-doi.js → kiem-tra-luat.js` |
 | `du-lieu-goc.js` | `window.DU_LIEU_GOC`: **khung trống** (nhóm việc A–H, quy trình mẫu Hưng Yên `quyTrinhMau`, `kiemSoatUuDai`). Không đưa số liệu dự án vào đây |
 | `app.js` | Lõi: `D` (dữ liệu), `UI`, `FS` (thư mục), `KHO` (IndexedDB), `LS`, `chuanHoa()`, `luu()` (lưu trình duyệt và ghi `du-lieu.json` sau 700 ms), `render()` (bảng `VE` theo tab), `suaTruong()`, `HD` (xử lý `data-act`), `MAU` (mẫu tờ trình), `taoPhieu()`, GPMB (`tongDot`, `hanChiTra`, `tatCaQD`, `laMo`, `dongBoPheDuyet`), thuê đất và miễn giảm, Tổng quan, Báo cáo (Zalo, Excel, HTML), `quetThuMuc`, `vaoSo`, `moFile` |
 | `tien-do.js` | Nhập file tiến độ PL2 (.xlsx), lịch sử phiên bản, `kiemTraSoLieu()` (kiểm tra chéo), nạp bảng di chuyển đường dẫn |
 | `gd2.js` | Tab Hợp đồng (`D.hopDong`: giá trị, `dieuChinh`, `thanhToan`), tab Bản vẽ (`D.banVe`), sinh việc từ quy trình mẫu, mẫu tờ trình thanh toán/LCNT/NVTC, `window.SUA_THEM` (sửa trường kiểu mới) |
 | `drive.js` | Kết nối trực tiếp Google Drive: OAuth (Google Identity Services, Client ID mặc định trong `GD_CLIENT_ID_MAC_DINH`), lớp `GDDir`/`GDFile` mô phỏng File System Access API, `quetDrive()` (lưu `thuMuc`, `mocDoi`), `moFileDrive()` |
 | `hoso-moi.js` | Tự quét khi kết nối (Drive: Changes API – `quetTangDrive`), mục **Văn bản → Hồ sơ mới** (`hoSoMoi`, `goiYHoSo`, `xuLyHoSo`), nhận **gói dữ liệu** từ `00. APP QLDA\goi-du-lieu\*.json` (`xuLyGoi`: khớp theo id/số QĐ/số HĐ/đường dẫn; điền ô trống; thêm dòng; báo lệch; `gpmbTongHop`, `moMaTongHop` theo ngày), báo cáo GPMB tuần (`THU_MUC_BC_GPMB`) |
+| `vong-doi.js` | Tab **Toàn bộ dự án** (`veToanBo`): thư viện bước chuẩn đọc từ `00. APP QLDA\thu-vien-cong-viec.json` (biến `TV`, không có trong repo), trạng thái bước (`viec.idcv` hoặc `D.vongDoi.buoc`), thư mục hồ sơ theo nhóm thủ tục (`D.vongDoi.thuMuc`), tạo việc từ thư viện; **dời dây chuyền** có xem trước (`tinhDoiChuyen`, bọc `suaTruong`); **đường găng** (`tinhDuongGang`, bọc `veGantt`); bọc `drawerViec`, `veTongQuan`, `kiemTraSoLieu` |
+| `kiem-tra-luat.js` | Tab **Kiểm tra luật** (`veKiemTraLuat`): cơ sở VBPL đọc từ `00. APP QLDA\vbpl-bds.json` (biến `VBPL`, xuất bằng `cong-cu\xuat-vbpl.py` từ repo riêng he-thong-vbpl-bds); `tachSoHieu` (tách số hiệu), `danhGiaCanCu` (đối chiếu), `ketQuaKiemTra` (gom căn cứ từ thư viện, quy trình mẫu, kiểm soát ưu đãi), `ktlChip` (chip cạnh căn cứ), tra cứu; `D.kiemTraLuat{cc, xm}` |
 | `sw.js` | Service worker (`BAN`, danh sách `TEP`) |
 | `claude/cap-nhat-qlda.md` | Bản sao lệnh Claude `/cap-nhat-qlda` (bản dùng thật ở `%USERPROFILE%\.claude\commands\`). Mô tả **cấu trúc gói dữ liệu** |
 | `tools/quet-ho-so.py` | Quét thư mục hồ sơ (NFC) |
 | `GHI CHU PHIEN BAN.md`, `HUONG DAN KET NOI GOOGLE DRIVE.md`, `README.md` | Ghi chú phiên bản, hướng dẫn người dùng |
 
 ## Mô hình dữ liệu (D)
-`duAn, caiDat{duongDanGoc, toiLa, thuMucApp='00. APP QLDA'}, nhom[], viec[] (id, tt, nhom, ten, batDau, ketThuc, pct, trangThai, phuThuoc, checklist, vanBan, nhatKy), moc[], vanBan[] (id, so, ngay, loai, chieu, coQuan, trichYeu, trangThai, duongDan tương đối, lienKet[{kieu:'dot'|'viec'|'hd'|'td', id}]), gpmb{dot[], tongHop{ngay, tongHa, thuHoiHa, congKhaiHa, pheDuyetHa(TỰ TÍNH từ QĐ), pheDuyetPA, chiTraHa, soHoChiTra, banGiaoHa, pheDuyetHaBaoCao, nguon}, keHoachChiTra[], lichSu[], moMa{…, qd[] (loai:'mo')}}, thueDat{dot[] (buoc, mg)}, hopDong[], banVe[], phieu[], lichSuTienDo[], nhatKyChung[], daBoSung[] (mã gói đã nạp), hoSoBoQua[]`.
+`duAn, caiDat{duongDanGoc, toiLa, thuMucApp='00. APP QLDA'}, nhom[], viec[] (id, tt, nhom, ten, batDau, ketThuc, pct, trangThai, phuThuoc, checklist, vanBan, nhatKy), moc[], vanBan[] (id, so, ngay, loai, chieu, coQuan, trichYeu, trangThai, duongDan tương đối, lienKet[{kieu:'dot'|'viec'|'hd'|'td', id}]), gpmb{dot[], tongHop{ngay, tongHa, thuHoiHa, congKhaiHa, pheDuyetHa(TỰ TÍNH từ QĐ), pheDuyetPA, chiTraHa, soHoChiTra, banGiaoHa, pheDuyetHaBaoCao, nguon}, keHoachChiTra[], lichSu[], moMa{…, qd[] (loai:'mo')}}, thueDat{dot[] (buoc, mg)}, hopDong[], banVe[], phieu[], lichSuTienDo[], nhatKyChung[], daBoSung[] (mã gói đã nạp), hoSoBoQua[], vongDoi{buoc{ma:{tt,ngay}}, thuMuc{nhom: đường dẫn}}, kiemTraLuat{cc{id:{xong,ngay}}, xm{id:{xong,ngay}}}`. Việc gắn thủ tục chuẩn có `idcv` (mã bước).
 - QĐ đất: `id, qdSo, qdNgay, hieuLuc, soHo, soPATS, dienTich (m²), khoanMuc{dat,taiSan,hoTro,thuong}, tong, dieuChinh[{qdSo,qdNgay,tongMoi}], chiTraTu/chiTraDen, ngayChuyenTien, soTienChuyen, trangThai (TT_DOT)`.
 - Đường dẫn file luôn **tương đối** từ thư mục dự án, ngăn cách `\`, so sánh sau khi chuẩn hoá **NFC** (`nfc()`); tên trên đĩa có thể ở dạng NFD.
 
@@ -35,4 +37,5 @@ App web (vanilla JS, không build) quản lý dự án KCN Văn Giang – GĐ1: 
 4. **Không sửa thẳng `du-lieu.json`** trừ khi người dùng đồng ý. Khi sửa: sao lưu trước, ghi `nhatKyChung`, cập nhật `capNhat`, ghi bằng LF. Cách ưu tiên là lập **gói dữ liệu** để người dùng xem trước và nạp trong app.
 5. **QĐ của cơ quan nhà nước là số liệu gốc.** Báo cáo nội bộ hoặc báo cáo xã lệch với QĐ thì theo QĐ và nêu lệch.
 6. **Không xoá hồ sơ:** bản trùng chuyển vào `98. Chờ xoá…`, bản cũ vào `99. Bản cũ`; di chuyển có nhật ký CSV và script hoàn tác.
-7. Khi chèn code bằng Python/heredoc, cẩn thận ký tự `\` (đã nhiều lần gây chuỗi `\0`); ưu tiên công cụ Edit.
+7. Tab mới: đăng ký `(window.VE_THEM ||= {})['ma-tab'] = hamVe` và thêm nút trong `index.html`.
+8. Khi chèn code bằng Python/heredoc, cẩn thận ký tự `\` (đã nhiều lần gây chuỗi `\0`); ưu tiên công cụ Edit.
